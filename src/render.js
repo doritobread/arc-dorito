@@ -92,13 +92,27 @@ export function createCard(item, matches) {
   if (item.crafting?.recipe) {
     const section = createSection('RECIPE')
     const recipe = item.crafting.recipe
-    const reqList = recipe.requirements.map(r =>
-      `${r.itemName} (x${r.quantity})`
-    ).join(' + ')
+    const items = getItems()
+
+    const line = document.createElement('div')
+    line.className = 'section-line'
+    recipe.requirements.forEach((r, i) => {
+      if (i > 0) line.appendChild(document.createTextNode(' + '))
+      const reqItem = items[r.itemId]
+      const rarity = reqItem ? RARITY_COLORS[reqItem.rarity] || RARITY_COLORS.common : RARITY_COLORS.common
+      const nameSpan = document.createElement('span')
+      nameSpan.className = 'craft-output-name'
+      nameSpan.style.color = rarity.text
+      nameSpan.textContent = r.itemName
+      line.appendChild(nameSpan)
+      line.appendChild(document.createTextNode(` (x${r.quantity})`))
+    })
     const stationInfo = recipe.stationLevel > 1
       ? `${recipe.station} ${toRoman(recipe.stationLevel)}`
       : recipe.station
-    addSectionLine(section, `${reqList} @ ${stationInfo}`)
+    line.appendChild(document.createTextNode(` @ ${stationInfo}`))
+    section.appendChild(line)
+
     card.appendChild(section)
   }
 
@@ -134,11 +148,24 @@ export function createCard(item, matches) {
   if (item.recycling?.recyclesInto) {
     const section = createSection('RECYCLES INTO')
     const outputs = item.recycling.recyclesInto
-    const line = outputs.map(o => `${o.itemName} (x${o.quantity})`).join(' + ')
-    addSectionLine(section, line)
+    const items = getItems()
+
+    const line = document.createElement('div')
+    line.className = 'section-line'
+    outputs.forEach((o, i) => {
+      if (i > 0) line.appendChild(document.createTextNode(' + '))
+      const outputItem = items[o.itemId]
+      const rarity = outputItem ? RARITY_COLORS[outputItem.rarity] || RARITY_COLORS.common : RARITY_COLORS.common
+      const nameSpan = document.createElement('span')
+      nameSpan.className = 'craft-output-name'
+      nameSpan.style.color = rarity.text
+      nameSpan.textContent = o.itemName
+      line.appendChild(nameSpan)
+      line.appendChild(document.createTextNode(` (x${o.quantity})`))
+    })
+    section.appendChild(line)
 
     // Show recycle value
-    const items = getItems()
     const recycleValue = outputs.reduce((sum, o) => {
       const outputItem = items[o.itemId]
       return sum + (outputItem?.sellValue || 0) * o.quantity
