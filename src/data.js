@@ -23,7 +23,7 @@ export async function loadData() {
   }
 
   // Load bundled data
-  const res = await fetch('/items.json')
+  const res = await fetch(import.meta.env.BASE_URL + 'items.json')
   if (!res.ok) throw new Error(`Failed to load items.json: ${res.status}`)
   itemsData = await res.json()
   console.log(`Loaded ${Object.keys(itemsData.items).length} items from bundled data`)
