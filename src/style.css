@@ -172,6 +172,54 @@ body {
   color: #000;
 }
 
+/* Sort controls */
+.sort-controls {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.sort-btn {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.sort-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.sort-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+
+.sort-dir-btn {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  transition: all 0.15s;
+}
+
+.sort-dir-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
 /* Item Cards */
 .item-card {
   background: var(--bg-card);
@@ -303,6 +351,34 @@ body {
 .verdict-neutral {
   background: var(--neutral-bg);
   color: var(--neutral-text);
+}
+
+.verdict-expand {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  opacity: 0.85;
+}
+
+.verdict-expand:hover {
+  opacity: 1;
+}
+
+.verdict-expanded {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.verdict-expanded-line {
+  font-size: 0.8rem;
+  padding: 1px 0;
+  font-weight: 400;
+}
+
+/* Rarity-colored craft output names */
+.craft-output-name {
+  font-weight: 500;
 }
 
 /* Error */
@@ -596,5 +672,14 @@ body {
   .filter-btn {
     padding: 4px 10px;
     font-size: 0.75rem;
+  }
+
+  .sort-controls {
+    gap: 4px;
+  }
+
+  .sort-btn {
+    padding: 3px 8px;
+    font-size: 0.7rem;
   }
 }

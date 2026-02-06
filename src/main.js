@@ -5,6 +5,7 @@ import { loadData, getItemsArray, hasProfile } from './data.js'
 import { initSearch, search, getAllItems } from './search.js'
 import { renderResults } from './render.js'
 import { initFilters, filterItems, getActiveFilter } from './filters.js'
+import { initSort, setSearchMode, getSort, applySorting } from './sort.js'
 import { initSettings, showSettings, showSetup } from './settings.js'
 import './style.css'
 
@@ -38,6 +39,12 @@ async function init() {
 
   // Filters
   initFilters(filtersContainer, () => {
+    updateResults()
+  })
+
+  // Sort controls
+  const sortContainer = document.getElementById('sort-controls')
+  initSort(sortContainer, () => {
     updateResults()
   })
 
@@ -106,6 +113,8 @@ function updateResults() {
   const resultsContainer = document.getElementById('results')
   const filter = getActiveFilter()
 
+  setSearchMode(!!currentQuery)
+
   let results
   if (currentQuery) {
     results = search(currentQuery)
@@ -122,6 +131,9 @@ function updateResults() {
     items = filterItems(items, filter)
     results = items.slice(0, 50).map(item => ({ item }))
   }
+
+  // Apply sorting
+  results = applySorting(results, getSort())
 
   renderResults(results, resultsContainer)
 

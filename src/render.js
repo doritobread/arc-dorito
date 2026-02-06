@@ -103,26 +103,25 @@ export function createCard(item, matches) {
   }
 
   // Crafting section — usedIn (what this item crafts into)
-  if (item.crafting?.usedIn?.length > 0) {
+  const filteredUsedIn = filterGunUpgrades(item.crafting?.usedIn || [])
+  if (filteredUsedIn.length > 0) {
     const section = createSection('CRAFTS INTO')
-    const uses = item.crafting.usedIn
-    const shown = uses.slice(0, MAX_CRAFTING_SHOWN)
+    const shown = filteredUsedIn.slice(0, MAX_CRAFTING_SHOWN)
 
     for (const use of shown) {
-      const stationInfo = use.station
-      addSectionLine(section, `${use.output} (x${use.quantity}) @ ${stationInfo}`)
+      addCraftLine(section, use)
     }
 
-    if (uses.length > MAX_CRAFTING_SHOWN) {
+    if (filteredUsedIn.length > MAX_CRAFTING_SHOWN) {
       const more = document.createElement('div')
       more.className = 'section-more'
-      more.textContent = `+${uses.length - MAX_CRAFTING_SHOWN} more`
+      more.textContent = `+${filteredUsedIn.length - MAX_CRAFTING_SHOWN} more`
       more.addEventListener('click', () => {
         // Expand to show all
         section.innerHTML = ''
         section.appendChild(createSectionHeader('CRAFTS INTO'))
-        for (const use of uses) {
-          addSectionLine(section, `${use.output} (x${use.quantity}) @ ${use.station}`)
+        for (const use of filteredUsedIn) {
+          addCraftLine(section, use)
         }
       })
       section.appendChild(more)
@@ -178,7 +177,46 @@ export function createCard(item, matches) {
   if (verdict) {
     const verdictEl = document.createElement('div')
     verdictEl.className = `card-verdict verdict-${verdict.type}`
-    verdictEl.textContent = verdict.text
+
+    if (verdict.moreCount > 0) {
+      // Clickable "+N more" verdict
+      const textSpan = document.createElement('span')
+      textSpan.textContent = verdict.text + ' '
+
+      const moreSpan = document.createElement('span')
+      moreSpan.className = 'verdict-expand'
+      moreSpan.textContent = `(+${verdict.moreCount} more)`
+      moreSpan.addEventListener('click', (e) => {
+        e.stopPropagation()
+        const expanded = verdictEl.querySelector('.verdict-expanded')
+        if (expanded) {
+          expanded.remove()
+          moreSpan.textContent = `(+${verdict.moreCount} more)`
+        } else {
+          moreSpan.textContent = `(collapse)`
+          const list = document.createElement('div')
+          list.className = 'verdict-expanded'
+          for (const use of verdict.usedIn.slice(1)) {
+            const items = getItems()
+            const outputItem = items[use.outputId]
+            const rarity = outputItem ? RARITY_COLORS[outputItem.rarity] || RARITY_COLORS.common : RARITY_COLORS.common
+            const line = document.createElement('div')
+            line.className = 'verdict-expanded-line'
+            const nameSpan = document.createElement('span')
+            nameSpan.style.color = rarity.text
+            nameSpan.textContent = use.output
+            line.appendChild(nameSpan)
+            list.appendChild(line)
+          }
+          verdictEl.appendChild(list)
+        }
+      })
+
+      verdictEl.appendChild(textSpan)
+      verdictEl.appendChild(moreSpan)
+    } else {
+      verdictEl.textContent = verdict.text
+    }
     card.appendChild(verdictEl)
   }
 
@@ -187,8 +225,8 @@ export function createCard(item, matches) {
   if (hasExpandableContent) {
     card.classList.add('expandable')
     card.addEventListener('click', (e) => {
-      // Don't toggle if clicking a button or link inside the card
-      if (e.target.closest('.section-more')) return
+      // Don't toggle if clicking interactive elements inside the card
+      if (e.target.closest('.section-more') || e.target.closest('.verdict-expand')) return
 
       const existing = card.querySelector('.card-expanded-content')
       if (existing) {
@@ -224,9 +262,13 @@ export function createCard(item, matches) {
   return card
 }
 
-const SKIP_VERDICT_CATEGORIES = new Set([
+const WEAPON_CATEGORIES = new Set([
   'Hand Cannon', 'Battle Rifle', 'Submachine Gun', 'Assault Rifle',
-  'Shotgun', 'Sniper Rifle', 'Pistol', 'Light Machinegun', 'Modification',
+  'Shotgun', 'Sniper Rifle', 'Pistol', 'Light Machinegun',
+])
+
+const SKIP_VERDICT_CATEGORIES = new Set([
+  ...WEAPON_CATEGORIES, 'Modification',
 ])
 
 function computeVerdict(item) {
@@ -241,15 +283,16 @@ function computeVerdict(item) {
     }
   }
 
-  // 2. Crafting utility
-  if (item.crafting?.usedIn?.length > 0) {
-    const topUse = item.crafting.usedIn[0]
-    const suffix = item.crafting.usedIn.length > 1
-      ? ` (+${item.crafting.usedIn.length - 1} more)`
-      : ''
+  // 2. Crafting utility (use filtered list)
+  const usedIn = filterGunUpgrades(item.crafting?.usedIn || [])
+  if (usedIn.length > 0) {
+    const topUse = usedIn[0]
+    const moreCount = usedIn.length - 1
     return {
       type: 'keep',
-      text: `KEEP \u2014 crafts into ${topUse.output}${suffix}`,
+      text: `KEEP \u2014 crafts into ${topUse.output}`,
+      moreCount,
+      usedIn,
     }
   }
 
@@ -305,6 +348,51 @@ function addSectionLine(section, text) {
   line.className = 'section-line'
   line.textContent = text
   section.appendChild(line)
+}
+
+/**
+ * Add a craft line with rarity-colored output name.
+ */
+function addCraftLine(section, use) {
+  const items = getItems()
+  const outputItem = items[use.outputId]
+  const rarity = outputItem ? RARITY_COLORS[outputItem.rarity] || RARITY_COLORS.common : RARITY_COLORS.common
+
+  const line = document.createElement('div')
+  line.className = 'section-line'
+
+  const nameSpan = document.createElement('span')
+  nameSpan.className = 'craft-output-name'
+  nameSpan.style.color = rarity.text
+  nameSpan.textContent = use.output
+
+  const detailSpan = document.createElement('span')
+  detailSpan.textContent = ` (x${use.quantity}) @ ${use.station}`
+
+  line.appendChild(nameSpan)
+  line.appendChild(detailSpan)
+  section.appendChild(line)
+}
+
+/**
+ * Filter out gun tier upgrades from usedIn.
+ * A gun upgrade = output is a weapon category whose recipe requires an item of the same weapon category.
+ */
+function filterGunUpgrades(usedIn) {
+  const items = getItems()
+  return usedIn.filter(use => {
+    const outputItem = items[use.outputId]
+    if (!outputItem) return true
+    if (!WEAPON_CATEGORIES.has(outputItem.category)) return true
+    // Check if recipe requires another item of the same weapon category
+    const recipe = outputItem.crafting?.recipe
+    if (!recipe) return true
+    const requiresWeaponOfSameCategory = recipe.requirements.some(req => {
+      const reqItem = items[req.itemId]
+      return reqItem && reqItem.category === outputItem.category
+    })
+    return !requiresWeaponOfSameCategory
+  })
 }
 
 function toRoman(n) {
