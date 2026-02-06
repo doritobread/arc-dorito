@@ -13,6 +13,7 @@ import { scrapeItems } from './scrape-ardb-items.mjs'
 import { scrapeCrafting } from './scrape-ardb-crafting.mjs'
 import { scrapeRecycling } from './scrape-ardb-recycling.mjs'
 import { scrapeWorkshop } from './scrape-workshop.mjs'
+import { scrapeQuests } from './scrape-quests.mjs'
 import { mergeData, saveMergedData } from './merge-data.mjs'
 import { validate } from './validate.mjs'
 
@@ -43,11 +44,12 @@ async function run() {
 
   // 2. Scrape all sources in parallel
   console.log('\n[update] Scraping data sources...\n')
-  const [items, crafting, recycling, workshop] = await Promise.all([
+  const [items, crafting, recycling, workshop, quests] = await Promise.all([
     scrapeItems(),
     scrapeCrafting(),
     scrapeRecycling(),
     scrapeWorkshop(),
+    scrapeQuests(),
   ])
 
   if (scrapeOnly) {
@@ -57,7 +59,7 @@ async function run() {
 
   // 3. Merge
   console.log('\n[update] Merging data...\n')
-  const merged = mergeData(items, crafting, recycling, workshop)
+  const merged = mergeData(items, crafting, recycling, workshop, quests)
 
   // 4. Validate
   console.log('\n[update] Validating...\n')

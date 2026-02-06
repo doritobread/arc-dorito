@@ -33,6 +33,9 @@ export async function scrapeItems() {
       sellValue: item.price || 0,
       stack: item.stack || 1,
       weight: item.weight || 0,
+      modifiers: Array.isArray(item.modifiers) && item.modifiers.length > 0
+        ? item.modifiers.map(m => m.description || m)
+        : [],
     }
   }
 

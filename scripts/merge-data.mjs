@@ -28,12 +28,13 @@ const KNOWN_REFS = {
   'scrappy-l5-0': { id: 'candleberries', name: 'Candleberries' },
 }
 
-export function mergeData(items, crafting, recycling, workshop) {
+export function mergeData(items, crafting, recycling, workshop, quests = []) {
   console.log('[merge] Starting merge...')
   console.log(`[merge]   Items: ${Object.keys(items).length}`)
   console.log(`[merge]   Crafting: ${crafting.length}`)
   console.log(`[merge]   Recycling: ${recycling.length}`)
   console.log(`[merge]   Workshop stations: ${workshop.length}`)
+  console.log(`[merge]   Quests with items: ${quests.length}`)
 
   // Build the final items map
   const finalItems = {}
@@ -47,6 +48,9 @@ export function mergeData(items, crafting, recycling, workshop) {
       rarity: item.rarity,
       sellValue: item.sellValue,
       aliases: [],
+      modifiers: item.modifiers || [],
+      quests: [],
+      valueTier: null,
       crafting: {
         recipe: null,
         usedIn: [],
@@ -155,18 +159,38 @@ export function mergeData(items, crafting, recycling, workshop) {
     }
   }
 
-  // 5. Add common aliases
+  // 5. Process quests — add quest requirements to items
+  for (const quest of quests) {
+    for (const req of quest.requiredItems) {
+      if (!req.itemId) continue
+      ensureItem(finalItems, req.itemId, req.itemName)
+      finalItems[req.itemId].quests.push({
+        questName: quest.questName,
+        questId: quest.questId,
+        quantity: req.quantity,
+      })
+    }
+  }
+
+  // 6. Compute valueTier for materials used in 2+ recipes
+  computeValueTiers(finalItems)
+
+  // 7. Add common aliases
   addAliases(finalItems)
 
   const itemCount = Object.keys(finalItems).length
   const withCrafting = Object.values(finalItems).filter(i => i.crafting.recipe || i.crafting.usedIn.length > 0).length
   const withRecycling = Object.values(finalItems).filter(i => i.recycling.recyclesInto || i.recycling.outputOf.length > 0).length
   const withWorkshop = Object.values(finalItems).filter(i => i.workshop.length > 0).length
+  const withQuests = Object.values(finalItems).filter(i => i.quests.length > 0).length
+  const withModifiers = Object.values(finalItems).filter(i => i.modifiers.length > 0).length
 
   console.log(`[merge] Final item count: ${itemCount}`)
   console.log(`[merge]   With crafting data: ${withCrafting}`)
   console.log(`[merge]   With recycling data: ${withRecycling}`)
   console.log(`[merge]   With workshop data: ${withWorkshop}`)
+  console.log(`[merge]   With quest data: ${withQuests}`)
+  console.log(`[merge]   With modifiers: ${withModifiers}`)
 
   return {
     version: '1.0.0',
@@ -184,11 +208,44 @@ function ensureItem(items, id, name) {
       rarity: 'common',
       sellValue: 0,
       aliases: [],
+      modifiers: [],
+      quests: [],
+      valueTier: null,
       crafting: { recipe: null, usedIn: [] },
       recycling: { recyclesInto: null, outputOf: [] },
       workshop: [],
     }
   }
+}
+
+/**
+ * Compute valueTier for materials based on crafted output value vs sell value.
+ * Only for items used in 2+ recipes.
+ */
+const TOP_TIER_ITEMS = new Set([
+  'metal-parts', 'medium-gun-parts', 'heavy-gun-parts', 'simple-gun-parts',
+  'mechanical-components', 'advanced-mechanical-components', 'light-gun-parts',
+  'steel-spring',
+])
+
+const MID_TIER_ITEMS = new Set([
+  'magnetic-accelerator', 'complex-gun-parts', 'advanced-electrical-components',
+  'mod-components', 'electrical-components', 'duct-tape', 'crude-explosives',
+  'durable-cloth', 'arc-alloy', 'sensors', 'explosive-compound', 'wires',
+])
+
+function computeValueTiers(items) {
+  let top = 0, mid = 0
+  for (const item of Object.values(items)) {
+    if (TOP_TIER_ITEMS.has(item.id)) {
+      item.valueTier = 'top'
+      top++
+    } else if (MID_TIER_ITEMS.has(item.id)) {
+      item.valueTier = 'mid'
+      mid++
+    }
+  }
+  console.log(`[merge]   Value tiers: ${top} top, ${mid} mid`)
 }
 
 function addAliases(items) {
@@ -245,15 +302,17 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const { scrapeCrafting } = await import('./scrape-ardb-crafting.mjs')
     const { scrapeRecycling } = await import('./scrape-ardb-recycling.mjs')
     const { scrapeWorkshop } = await import('./scrape-workshop.mjs')
+    const { scrapeQuests } = await import('./scrape-quests.mjs')
 
-    const [items, crafting, recycling, workshop] = await Promise.all([
+    const [items, crafting, recycling, workshop, quests] = await Promise.all([
       scrapeItems(),
       scrapeCrafting(),
       scrapeRecycling(),
       scrapeWorkshop(),
+      scrapeQuests(),
     ])
 
-    const merged = mergeData(items, crafting, recycling, workshop)
+    const merged = mergeData(items, crafting, recycling, workshop, quests)
     saveMergedData(merged)
   } catch (e) {
     console.error('[merge] Error:', e.message)

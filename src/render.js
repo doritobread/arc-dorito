@@ -66,6 +66,17 @@ export function createCard(item, matches) {
     metaEl.appendChild(price)
   }
 
+  // Value tier star for materials
+  if (item.valueTier) {
+    const star = document.createElement('span')
+    star.className = `value-star value-star-${item.valueTier}`
+    star.textContent = item.valueTier === 'top' ? '\u2605' : '\u2606'
+    star.title = item.valueTier === 'top'
+      ? 'Highly valuable crafting material'
+      : 'Valuable crafting material'
+    nameEl.appendChild(star)
+  }
+
   header.appendChild(nameEl)
   header.appendChild(metaEl)
   card.appendChild(header)
@@ -171,10 +182,56 @@ export function createCard(item, matches) {
     card.appendChild(verdictEl)
   }
 
+  // Expandable card — click to show modifiers and quests
+  const hasExpandableContent = (item.modifiers?.length > 0) || (item.quests?.length > 0)
+  if (hasExpandableContent) {
+    card.classList.add('expandable')
+    card.addEventListener('click', (e) => {
+      // Don't toggle if clicking a button or link inside the card
+      if (e.target.closest('.section-more')) return
+
+      const existing = card.querySelector('.card-expanded-content')
+      if (existing) {
+        existing.remove()
+        card.classList.remove('expanded')
+        return
+      }
+
+      card.classList.add('expanded')
+      const content = document.createElement('div')
+      content.className = 'card-expanded-content'
+
+      if (item.modifiers?.length > 0) {
+        const modSection = createSection('MODIFIERS')
+        for (const mod of item.modifiers) {
+          addSectionLine(modSection, mod)
+        }
+        content.appendChild(modSection)
+      }
+
+      if (item.quests?.length > 0) {
+        const questSection = createSection('QUESTS')
+        for (const quest of item.quests) {
+          addSectionLine(questSection, `Need x${quest.quantity} for ${quest.questName}`)
+        }
+        content.appendChild(questSection)
+      }
+
+      card.appendChild(content)
+    })
+  }
+
   return card
 }
 
+const SKIP_VERDICT_CATEGORIES = new Set([
+  'Hand Cannon', 'Battle Rifle', 'Submachine Gun', 'Assault Rifle',
+  'Shotgun', 'Sniper Rifle', 'Pistol', 'Light Machinegun', 'Modification',
+])
+
 function computeVerdict(item) {
+  if (SKIP_VERDICT_CATEGORIES.has(item.category)) return null
+
   // 1. Workshop need
   const topNeed = getTopWorkshopNeed(item.workshop || [])
   if (topNeed) {

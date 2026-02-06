@@ -349,16 +349,7 @@ body {
 }
 
 .settings-close {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 1.5rem;
   cursor: pointer;
-  padding: 4px 8px;
-}
-
-.settings-close:hover {
-  color: var(--text-primary);
 }
 
 .settings-section {
@@ -508,6 +499,65 @@ body {
 
 .setup-done-btn:hover {
   background: var(--accent-hover);
+}
+
+/* Value stars */
+.value-star {
+  margin-left: 6px;
+  font-size: 0.9rem;
+  cursor: default;
+}
+
+.value-star-top {
+  color: #fbbf24;
+}
+
+.value-star-mid {
+  color: #a1a1aa;
+}
+
+/* Expandable cards */
+.item-card.expandable {
+  cursor: pointer;
+}
+
+.item-card.expanded {
+  border-color: var(--accent);
+}
+
+.card-expanded-content {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+
+.card-expanded-content .card-section {
+  border-top: none;
+  margin-top: 6px;
+  padding-top: 0;
+}
+
+.card-expanded-content .card-section:first-child {
+  margin-top: 0;
+}
+
+/* Max All button */
+.max-all-btn {
+  margin-bottom: 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.max-all-btn:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+/* Settings Done button override */
+.settings-close.setup-done-btn {
+  font-size: 0.85rem;
+  padding: 6px 18px;
 }
 
 /* Responsive */

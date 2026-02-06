@@ -22,12 +22,13 @@ export function showSettings() {
     <div class="settings-panel">
       <div class="settings-header">
         <h2>Settings</h2>
-        <button class="settings-close" aria-label="Close">&times;</button>
+        <button class="settings-close setup-done-btn" aria-label="Done">Done</button>
       </div>
 
       <div class="settings-section">
         <h3>Workshop Levels</h3>
         <p class="settings-hint">Set your workshop levels to get personalized item recommendations.</p>
+        <button id="workshop-max-all" class="settings-btn max-all-btn">Max All</button>
         <div id="workshop-grid" class="workshop-grid"></div>
       </div>
 
@@ -88,6 +89,22 @@ export function showSettings() {
     row.appendChild(selector)
     grid.appendChild(row)
   }
+
+  // Max All button
+  overlay.querySelector('#workshop-max-all').addEventListener('click', () => {
+    for (const station of STATIONS) {
+      progress[station.id] = station.maxLevel
+    }
+    setWorkshopProgress(progress)
+    // Update all button active states
+    grid.querySelectorAll('.workshop-row').forEach((row, ri) => {
+      const station = STATIONS[ri]
+      row.querySelectorAll('.workshop-level-btn').forEach((btn, level) => {
+        btn.classList.toggle('active', level === station.maxLevel)
+      })
+    })
+    if (onSettingsChange) onSettingsChange()
+  })
 
   // Show completed toggle
   const settings = getSettings()
@@ -156,6 +173,7 @@ export function showSetup() {
       <div class="setup-panel">
         <h1>Welcome to ARC Dorito</h1>
         <p>Set your workshop levels so we can tell you what's worth keeping.</p>
+        <button id="setup-max-all" class="settings-btn max-all-btn">Max All</button>
         <div id="setup-grid" class="workshop-grid"></div>
         <button id="setup-done" class="setup-done-btn">Done</button>
       </div>
@@ -195,6 +213,18 @@ export function showSetup() {
       row.appendChild(selector)
       grid.appendChild(row)
     }
+
+    overlay.querySelector('#setup-max-all').addEventListener('click', () => {
+      for (const station of STATIONS) {
+        progress[station.id] = station.maxLevel
+      }
+      grid.querySelectorAll('.workshop-row').forEach((row, ri) => {
+        const station = STATIONS[ri]
+        row.querySelectorAll('.workshop-level-btn').forEach((btn, level) => {
+          btn.classList.toggle('active', level === station.maxLevel)
+        })
+      })
+    })
 
     overlay.querySelector('#setup-done').addEventListener('click', () => {
       setWorkshopProgress(progress)
