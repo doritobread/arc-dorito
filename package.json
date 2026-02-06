@@ -1,0 +1,24 @@
+{
+  "name": "arc-dorito",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "scrape": "node scripts/update.mjs --scrape-only",
+    "merge": "node scripts/merge-data.mjs",
+    "validate": "node scripts/validate.mjs",
+    "update": "node scripts/update.mjs",
+    "rollback": "node scripts/rollback.mjs"
+  },
+  "dependencies": {
+    "fuse.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "cheerio": "^1.0.0",
+    "playwright": "^1.48.0",
+    "vite": "^6.0.0"
+  }
+}
