@@ -9,24 +9,32 @@ import { fileURLToPath } from 'url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const DATA_DIR = join(__dirname, '..', 'data')
 
-// Known items that appear as RSC references — manually mapped from context
-const KNOWN_REFS = {
-  // Gear Bench L1 refs
-  'gear-bench-l1-0': { id: 'fabric', name: 'Fabric' },
-  'gear-bench-l1-1': { id: 'rubber-parts', name: 'Rubber Parts' },
-  // Gear Bench L2
-  'gear-bench-l2-1': { id: 'durable-cloth', name: 'Durable Cloth' },
-  // Gear Bench L3
-  'gear-bench-l3-1': { id: 'arc-flex-rubber', name: 'ARC Flex Rubber' },
-  // Refiner L1
-  'refiner-l1-0': { id: 'scrap-metal', name: 'Scrap Metal' },
-  // Medical Lab L1
-  'medical-lab-l1-1': { id: 'arc-alloy', name: 'ARC Alloy' },
-  // Explosives L1
-  'explosives-l1-1': { id: 'arc-alloy', name: 'ARC Alloy' },
-  // Scrappy L5
-  'scrappy-l5-0': { id: 'candleberries', name: 'Candleberries' },
+// Canonical station names — normalize scraped names to match profile.js STATIONS
+const CANONICAL_STATION_NAMES = {
+  'utility station': 'Utility Station',
+  'explosive station': 'Explosives Station',
 }
+
+function normalizeStationName(name) {
+  if (!name) return name
+  return CANONICAL_STATION_NAMES[name.toLowerCase()] || name
+}
+
+// Overrides for workshop items that the scraper misresolves from RSC refs.
+// These take priority over scraped values. Verified against arcraiders.wiki.
+const KNOWN_REFS = {
+  // Gear Bench L1 — scraper misresolves both to "Rounds played"
+  'gear-bench-l1-0': { id: 'plastic-parts', name: 'Plastic Parts' },
+  'gear-bench-l1-1': { id: 'fabric', name: 'Fabric' },
+  // Gear Bench L3 req 1 — scraper misresolves to Apricot (cross-station ref)
+  'gear-bench-l3-1': { id: 'advanced-electrical-components', name: 'Advanced Electrical Components' },
+  // Refiner L1 req 0 — scraper misresolves to "Rounds played"
+  'refiner-l1-0': { id: 'metal-parts', name: 'Metal Parts' },
+}
+
+// Non-item workshop requirements (e.g. "Rounds played") that shouldn't
+// create items or workshop entries in the data
+const SKIP_WORKSHOP_ITEMS = new Set(['rounds'])
 
 export function mergeData(items, crafting, recycling, workshop, quests = []) {
   console.log('[merge] Starting merge...')
@@ -72,13 +80,14 @@ export function mergeData(items, crafting, recycling, workshop, quests = []) {
     ensureItem(finalItems, outputId, recipe.outputName)
 
     // Set the recipe on the output item
+    const station = normalizeStationName(recipe.station)
     finalItems[outputId].crafting.recipe = {
       requirements: recipe.requirements.map(r => ({
         itemId: r.itemId,
         itemName: r.itemName || finalItems[r.itemId]?.name || r.itemId,
         quantity: r.quantity,
       })),
-      station: recipe.station,
+      station,
       stationLevel: recipe.stationLevel,
       blueprint: recipe.blueprint,
     }
@@ -91,7 +100,7 @@ export function mergeData(items, crafting, recycling, workshop, quests = []) {
         output: recipe.outputName,
         outputId: outputId,
         quantity: req.quantity,
-        station: recipe.station,
+        station,
       })
     }
   }
@@ -129,27 +138,30 @@ export function mergeData(items, crafting, recycling, workshop, quests = []) {
         let itemId = req.itemId
         let itemName = req.itemName
 
-        // Try to resolve unresolved refs
-        if (!itemId) {
-          const refKey = `${station.id}-l${level.level}-${level.requirements.indexOf(req)}`
-          const known = KNOWN_REFS[refKey]
-          if (known) {
-            itemId = known.id
-            itemName = known.name
-          } else {
-            console.warn(`[merge] Unresolved workshop ref: ${station.name} L${level.level} req #${level.requirements.indexOf(req)}`)
-            continue
-          }
+        // KNOWN_REFS overrides take priority — the scraper's RSC reference
+        // resolution can misresolve items across stations
+        const refKey = `${station.id}-l${level.level}-${level.requirements.indexOf(req)}`
+        const known = KNOWN_REFS[refKey]
+        if (known) {
+          itemId = known.id
+          itemName = known.name
+        } else if (!itemId) {
+          console.warn(`[merge] Unresolved workshop ref: ${station.name} L${level.level} req #${level.requirements.indexOf(req)}`)
+          continue
         }
+
+        // Skip non-item requirements (e.g. "Rounds played")
+        if (SKIP_WORKSHOP_ITEMS.has(itemId)) continue
 
         ensureItem(finalItems, itemId, itemName)
         // Avoid duplicates
+        const stationName = normalizeStationName(station.name)
         const existing = finalItems[itemId].workshop.find(
-          w => w.station === station.name && w.level === level.level
+          w => w.stationId === station.id && w.level === level.level
         )
         if (!existing) {
           finalItems[itemId].workshop.push({
-            station: station.name,
+            station: stationName,
             stationId: station.id,
             level: level.level,
             quantity: req.quantity,
@@ -164,11 +176,16 @@ export function mergeData(items, crafting, recycling, workshop, quests = []) {
     for (const req of quest.requiredItems) {
       if (!req.itemId) continue
       ensureItem(finalItems, req.itemId, req.itemName)
-      finalItems[req.itemId].quests.push({
-        questName: quest.questName,
-        questId: quest.questId,
-        quantity: req.quantity,
-      })
+      const existingQuest = finalItems[req.itemId].quests.find(
+        q => q.questId === quest.questId && q.quantity === req.quantity
+      )
+      if (!existingQuest) {
+        finalItems[req.itemId].quests.push({
+          questName: quest.questName,
+          questId: quest.questId,
+          quantity: req.quantity,
+        })
+      }
     }
   }
 

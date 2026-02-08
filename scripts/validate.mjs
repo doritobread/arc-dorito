@@ -96,6 +96,57 @@ export function validate(data) {
     }
   }
 
+  // Check workshop data quality
+  const VALID_STATION_IDS = new Set([
+    'workbench', 'gunsmith', 'gear-bench', 'medical-lab',
+    'explosives-station', 'utility-station', 'refiner', 'scrappy',
+  ])
+  const VALID_STATION_NAMES = new Set([
+    'Workbench', 'Gunsmith', 'Gear Bench', 'Medical Lab',
+    'Explosives Station', 'Utility Station', 'Refiner', 'Scrappy',
+  ])
+
+  let workshopRefs = 0
+  let workshopNameIssues = 0
+  const stationNameVariants = new Set()
+
+  for (const item of Object.values(items)) {
+    for (const w of item.workshop || []) {
+      workshopRefs++
+      stationNameVariants.add(w.station)
+      if (!VALID_STATION_IDS.has(w.stationId)) {
+        warnings.push(`Invalid workshop stationId: ${item.name} -> ${w.stationId}`)
+      }
+      if (!VALID_STATION_NAMES.has(w.station)) {
+        workshopNameIssues++
+        warnings.push(`Non-canonical workshop station name: "${w.station}" on ${item.name}`)
+      }
+    }
+
+    // Check for duplicate quest entries
+    if (item.quests?.length > 1) {
+      const seen = new Set()
+      for (const q of item.quests) {
+        const key = `${q.questId}:${q.quantity}`
+        if (seen.has(key)) {
+          warnings.push(`Duplicate quest entry: ${item.name} -> ${q.questName} (x${q.quantity})`)
+        }
+        seen.add(key)
+      }
+    }
+  }
+
+  // Check known workshop items have data
+  const workshopCheckItems = ['fabric', 'arc-alloy', 'plastic-parts', 'metal-parts']
+  for (const id of workshopCheckItems) {
+    if (items[id] && (!items[id].workshop || items[id].workshop.length === 0)) {
+      warnings.push(`Expected workshop data on ${id} but found none`)
+    }
+  }
+
+  console.log(`[validate] Workshop refs: ${workshopRefs} (${workshopNameIssues} name issues)`)
+  console.log(`[validate] Station name variants: ${[...stationNameVariants].join(', ')}`)
+
   // Spot-check known values
   const chemicals = items['chemicals']
   if (chemicals) {

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "timestamp": "2026-02-06T08:07:08.819Z",
+  "timestamp": "2026-02-08T01:41:23.979Z",
   "items": {
     "adrenaline-shot": {
       "id": "adrenaline-shot",
@@ -17,16 +17,6 @@
         {
           "questName": "Trash Into Treasure",
           "questId": "trash-into-treasure",
-          "quantity": 3
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
           "quantity": 3
         },
         {
@@ -133,11 +123,6 @@
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
           "quantity": 2
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 1
         }
       ],
       "valueTier": "mid",
@@ -257,8 +242,14 @@
       },
       "workshop": [
         {
-          "station": "Utility station",
+          "station": "Utility Station",
           "stationId": "utility-station",
+          "level": 3,
+          "quantity": 5
+        },
+        {
+          "station": "Gear Bench",
+          "stationId": "gear-bench",
           "level": 3,
           "quantity": 5
         }
@@ -276,21 +267,6 @@
       ],
       "modifiers": [],
       "quests": [
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
-        },
         {
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
@@ -1498,12 +1474,6 @@
           "stationId": "scrappy",
           "level": 5,
           "quantity": 12
-        },
-        {
-          "station": "Gear Bench",
-          "stationId": "gear-bench",
-          "level": 3,
-          "quantity": 5
         }
       ]
     },
@@ -1661,7 +1631,7 @@
       },
       "workshop": [
         {
-          "station": "Utility station",
+          "station": "Utility Station",
           "stationId": "utility-station",
           "level": 1,
           "quantity": 6
@@ -3234,11 +3204,6 @@
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
           "quantity": 5
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 5
         }
       ],
       "valueTier": null,
@@ -4225,7 +4190,7 @@
             "output": "Heavy Fuze Grenade",
             "outputId": "heavy-fuze-grenade",
             "quantity": 2,
-            "station": "Explosive Station"
+            "station": "Explosives Station"
           },
           {
             "output": "Smoke Grenade",
@@ -5329,7 +5294,7 @@
       },
       "workshop": [
         {
-          "station": "Utility station",
+          "station": "Utility Station",
           "stationId": "utility-station",
           "level": 2,
           "quantity": 2
@@ -5507,16 +5472,6 @@
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
           "quantity": 1
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
         }
       ],
       "valueTier": null,
@@ -5742,11 +5697,6 @@
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
           "quantity": 3
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
         }
       ],
       "valueTier": null,
@@ -5820,16 +5770,6 @@
         {
           "questName": "A Bad Feeling",
           "questId": "a-bad-feeling",
-          "quantity": 5
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 5
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
           "quantity": 5
         },
         {
@@ -6133,7 +6073,7 @@
       },
       "workshop": [
         {
-          "station": "Utility station",
+          "station": "Utility Station",
           "stationId": "utility-station",
           "level": 2,
           "quantity": 5
@@ -6525,7 +6465,7 @@
             "output": "Heavy Fuze Grenade",
             "outputId": "heavy-fuze-grenade",
             "quantity": 1,
-            "station": "Explosive Station"
+            "station": "Explosives Station"
           },
           {
             "output": "Wolfpack",
@@ -7048,6 +6988,12 @@
           "stationId": "medical-lab",
           "level": 1,
           "quantity": 50
+        },
+        {
+          "station": "Gear Bench",
+          "stationId": "gear-bench",
+          "level": 1,
+          "quantity": 30
         }
       ]
     },
@@ -7816,7 +7762,7 @@
       },
       "workshop": [
         {
-          "station": "Utility station",
+          "station": "Utility Station",
           "stationId": "utility-station",
           "level": 3,
           "quantity": 3
@@ -7994,11 +7940,6 @@
       "aliases": [],
       "modifiers": [],
       "quests": [
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
-        },
         {
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
@@ -8505,7 +8446,7 @@
               "quantity": 2
             }
           ],
-          "station": "Explosive Station",
+          "station": "Explosives Station",
           "stationLevel": 3,
           "blueprint": null
         },
@@ -10208,7 +10149,7 @@
       },
       "workshop": [
         {
-          "station": "Utility station",
+          "station": "Utility Station",
           "stationId": "utility-station",
           "level": 3,
           "quantity": 4
@@ -10742,11 +10683,6 @@
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
           "quantity": 1
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 1
         }
       ],
       "valueTier": null,
@@ -10958,11 +10894,6 @@
       "aliases": [],
       "modifiers": [],
       "quests": [
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 5
-        },
         {
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
@@ -11276,11 +11207,6 @@
       ],
       "modifiers": [],
       "quests": [
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
-        },
         {
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
@@ -11665,11 +11591,6 @@
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
           "quantity": 80
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 80
         }
       ],
       "valueTier": null,
@@ -11717,16 +11638,6 @@
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
           "quantity": 3
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 5
         },
         {
           "questName": "Sparks Fly",
@@ -12445,6 +12356,12 @@
           "stationId": "gunsmith",
           "level": 1,
           "quantity": 20
+        },
+        {
+          "station": "Refiner",
+          "stationId": "refiner",
+          "level": 1,
+          "quantity": 60
         }
       ]
     },
@@ -12811,11 +12728,6 @@
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
           "quantity": 1
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
         },
         {
           "questName": "Sparks Fly",
@@ -13711,10 +13623,16 @@
       },
       "workshop": [
         {
-          "station": "Utility station",
+          "station": "Utility Station",
           "stationId": "utility-station",
           "level": 1,
           "quantity": 50
+        },
+        {
+          "station": "Gear Bench",
+          "stationId": "gear-bench",
+          "level": 1,
+          "quantity": 25
         }
       ]
     },
@@ -13984,11 +13902,6 @@
       "aliases": [],
       "modifiers": [],
       "quests": [
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 1
-        },
         {
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
@@ -14390,21 +14303,6 @@
         {
           "questName": "The Trifecta",
           "questId": "the-trifecta",
-          "quantity": 1
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 1
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 1
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
           "quantity": 1
         },
         {
@@ -16448,11 +16346,6 @@
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
           "quantity": 40
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 40
         }
       ],
       "valueTier": null,
@@ -16872,11 +16765,6 @@
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
           "quantity": 5
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
         },
         {
           "questName": "Sparks Fly",
@@ -17431,7 +17319,7 @@
       },
       "workshop": [
         {
-          "station": "Utility station",
+          "station": "Utility Station",
           "stationId": "utility-station",
           "level": 2,
           "quantity": 6
@@ -18089,11 +17977,6 @@
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
           "quantity": 3
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
         }
       ],
       "valueTier": null,
@@ -18375,16 +18258,6 @@
         {
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
-          "quantity": 3
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 1
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
           "quantity": 1
         }
       ],
@@ -18474,11 +18347,6 @@
       "aliases": [],
       "modifiers": [],
       "quests": [
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
-        },
         {
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
@@ -18762,11 +18630,6 @@
         {
           "questName": "On The Map",
           "questId": "on-the-map",
-          "quantity": 1
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
           "quantity": 1
         },
         {
@@ -21042,16 +20905,6 @@
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
           "quantity": 3
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 3
         }
       ],
       "valueTier": null,
@@ -21092,45 +20945,6 @@
       },
       "workshop": []
     },
-    "rounds": {
-      "id": "rounds",
-      "name": "Rounds played",
-      "category": "",
-      "rarity": "common",
-      "sellValue": 0,
-      "aliases": [],
-      "modifiers": [],
-      "quests": [],
-      "valueTier": null,
-      "crafting": {
-        "recipe": null,
-        "usedIn": []
-      },
-      "recycling": {
-        "recyclesInto": null,
-        "outputOf": []
-      },
-      "workshop": [
-        {
-          "station": "Scrappy",
-          "stationId": "scrappy",
-          "level": 1,
-          "quantity": 2
-        },
-        {
-          "station": "Gear Bench",
-          "stationId": "gear-bench",
-          "level": 1,
-          "quantity": 25
-        },
-        {
-          "station": "Refiner",
-          "stationId": "refiner",
-          "level": 1,
-          "quantity": 60
-        }
-      ]
-    },
     "extended-light-mag-i": {
       "id": "extended-light-mag-i",
       "name": "extended-light-mag-i",
@@ -21140,11 +20954,6 @@
       "aliases": [],
       "modifiers": [],
       "quests": [
-        {
-          "questName": "The Right Tool",
-          "questId": "the-right-tool",
-          "quantity": 1
-        },
         {
           "questName": "The Right Tool",
           "questId": "the-right-tool",
@@ -21315,11 +21124,6 @@
           "questName": "Sparks Fly",
           "questId": "sparks-fly",
           "quantity": 1
-        },
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 1
         }
       ],
       "valueTier": null,
@@ -21368,11 +21172,6 @@
       "aliases": [],
       "modifiers": [],
       "quests": [
-        {
-          "questName": "Sparks Fly",
-          "questId": "sparks-fly",
-          "quantity": 1
-        },
         {
           "questName": "Sparks Fly",
           "questId": "sparks-fly",

@@ -191,9 +191,7 @@ export function createCard(item, matches) {
   if (workshopNeeds.length > 0) {
     const section = createSection('WORKSHOP')
     for (const need of workshopNeeds) {
-      const levelInfo = need.level > 1
-        ? `${need.station} L${need.level}`
-        : need.station
+      const levelInfo = `${need.station} L${need.level}`
       addSectionLine(section, `${levelInfo} (x${need.quantity})`)
     }
     card.appendChild(section)
